@@ -241,10 +241,22 @@
         window.location.href = 'index.html';
       });
 
+      const again = document.createElement('button');
+      again.textContent = 'Play Again';
+      again.style.backgroundColor = 'green';
+
+      again.addEventListener('click', function(){
+
+        window.location.href = 'game.html';
+        popup.style.display = 'none';
+
+      });
+
       popup.innerHTML = `${message} you took ${timeTaken} seconds<br>Total Water Wasted - ${wasted} gallons <br> Total Water Saved - ${saved} gallons`;
       popup.style.display = 'block';
 
       popup.appendChild(back);
+      popup.appendChild(again);
 
       let totalScore = parseInt(localStorage.getItem("totalScore")) || 0;
 

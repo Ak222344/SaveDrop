@@ -130,6 +130,7 @@ body {
       margin: 0;
       padding: 0;
       background-color: #fff;
+      margin-bottom: 200px;
     }
     .header {
       display: flex;
@@ -191,8 +192,7 @@ body {
       flex-direction: row;
       align-items: center;
       justify-content: space-between;
-      margin-top: 50px;
-      flex-wrap: wrap;
+      margin-top: 10px;
       padding: 100px;
     }
     .leaderboard {
@@ -200,6 +200,7 @@ body {
       color: white;
       font-size: 44px;
       font-weight: bold;
+      height: 600px;
       padding: 50px;
       border-radius: 25px;
       text-align: center;
@@ -265,6 +266,19 @@ body {
       padding: 40px;
 
     }
+
+.challenge-content  .content2{
+
+width: 100%;
+max-width: 60%;
+background-color: rgba(214, 214, 214, 0.904);
+display: flex;
+flex-direction: column;
+height: 85vh;
+overflow-y: auto;
+padding: 40px;
+
+}
 
 .progress-container {
   width: 20px;
@@ -373,20 +387,60 @@ body {
       <div class="challenges">
         <div class="challenge-box">
           <div class="challenge-title">Weekly Challenge</div>
+          <p>Join this 7-day challenge to combat water scarcity! You’ll learn how to build a percolation pit</p>
           <div class="divider blue"></div>
           <button class="start-button" onclick="challenge()">START</button>
         </div>
         <div class="challenge-box">
           <div class="challenge-title">Weekly Challenge</div>
-          <div class="divider green"></div>
-          <button class="start-button">START</button>
+          <p>Rain barrels collect roof runoff for garden use, reducing demand on potable water.
+           </p>
+          <div class="divider blue"></div>
+          <button class="start-button" onclick="challenge2()">START</button>
         </div>
       </div>
+
+    </div>
+
+    <div style="width: 100%;display: flex;align-items: center;justify-content: center;" class="footer" id="footer">
+
+      <div style="width: 80%;background-color: rgb(212, 211, 211);padding: 50px;display: flex;flex-direction: row;gap: 100px;border-radius: 13px;" class="box" id="box">
+
+        <div class="box1" style="display: flex;flex-direction: column;gap: 20px;">
+
+        <h1>Appliance Recommendation</h1>
+        <p>Select your appliance and see upgrade suggestions!</p>
+      
+        <label for="appliance">Choose an appliance:</label>
+        <select style="width: 250px;" id="appliance">
+          <option value="toilet">Toilet</option>
+          <option value="showerhead">Showerhead</option>
+          <option value="washing_machine">Washing Machine</option>
+          <option value="Faucets">Faucets</option>
+        </select>
+      
+        <label for="age">Approximate age (years):</label>
+
+        <input style="width: 250px;" type="number" id="age" min="0" max="60" placeholder="Enter age">
+
+        <button style="color: white;background: rgb(64, 64, 239);padding: 15px;border-radius: 8px;width: 100px;" onclick="assessAppliance()">Assess</button>
+
+      </div>
+
+      <div id="results">
+        <h2>Assessment Results</h2>
+        <p id="current"></p>
+        <p id="recommendation"></p>
+        <p id="savings"></p>
+      </div>
+
+      </div>
+
     </div>
 
     <div class="challenge-content" id="challenge-content">
 
-      <div class="content">
+      <div style="display: none;" class="content" id="content">
 
         <h1>Build a Prelocation Pit</h1>
         <p>Join this 7-day challenge to combat water scarcity! You’ll learn how to build a percolation pit (a simple underground structure) or recharge well (a deeper groundwater refill system) step by step. By redirecting rainwater into the ground, you’ll help replenish Earth’s water table—while earning points for every action!</p>
@@ -407,13 +461,160 @@ body {
 
             <h3>Learn the Basics:</h3>
             <p>Read this following article by clicking on the link: <a href="https://testbook.com/civil-engineering/percolation-tank">Article</a></p>
-            <button style="background-color: rgb(37, 212, 37);color: white;border-radius: 6px;border: none;" value="20" onclick="addPoints(this.value,this)">Submit</button>
+            <button style="background-color: rgb(37, 212, 37);color: white;border-radius: 6px;border: none;" value="10" onclick="addPoints(this.value,this)">Submit</button>
           </div>
 
           <div style="background-color: white;border-radius: 10px;padding: 20px;margin-top: 20px;" class="task2" id="task2">
 
-            <h3>Learn the Basics:</h3>
-            <p>Read this following article by clicking on the link: <a href="https://testbook.com/civil-engineering/percolation-tank">Article</a></p>
+            <h3>Check Soil Permeability</h3>
+            <p> Dig a small hole (1ft deep).  
+              - Fill with water & measure absorption rate. 
+           </p>
+            <button style="background-color: rgb(37, 212, 37);color: white;border-radius: 6px;border: none;" value="10" onclick="addPoints(this.value,this)">Submit</button>
+          </div>
+
+          <div style="background-color: white;border-radius: 10px;padding: 20px;margin-top: 20px;" class="task3" id="task3">
+
+            <h3>Decide a Location</h3>
+            <p>  It should beaway from sewage/septic tanks.  
+              Sketch/describe your plan in the app.                 
+           </p>
+            <button style="background-color: rgb(37, 212, 37);color: white;border-radius: 6px;border: none;" value="10" onclick="addPoints(this.value,this)">Submit</button>
+          </div>
+
+          <div style="background-color: white;border-radius: 10px;padding: 20px;margin-top: 20px;" class="task4" id="task4">
+
+            <h3>Gather Materials</h3>
+            <p> 
+              Collect:  
+                 - Gravel, sand, PVC pipe (for wells), bricks (optional)     
+           </p>
+            <button style="background-color: rgb(37, 212, 37);color: white;border-radius: 6px;border: none;" value="20" onclick="addPoints(this.value,this)">Submit</button>
+          </div>
+
+          <div style="background-color: white;border-radius: 10px;padding: 20px;margin-top: 20px;" class="task5" id="task5">
+
+            <h3>Dig and Constrcut</h3>
+            <p> 
+              Dig a pit (3-5ft deep) or well (if advanced).  
+              - Line with gravel/sand for filtration.               
+           </p>
+            <button style="background-color: rgb(37, 212, 37);color: white;border-radius: 6px;border: none;" value="20" onclick="addPoints(this.value,this)">Submit</button>
+          </div>
+
+          <div style="background-color: white;border-radius: 10px;padding: 20px;margin-top: 20px;" class="task6" id="task6">
+
+            <h3>Redirect Water</h3>
+            <p> 
+              Connect rooftop/drain pipes to the pit.  
+**Action:** Show the water flow setup.  
+             
+           </p>
+            <button style="background-color: rgb(37, 212, 37);color: white;border-radius: 6px;border: none;" value="10" onclick="addPoints(this.value,this)">Submit</button>
+          </div>
+
+          <div style="background-color: white;border-radius: 10px;padding: 20px;margin-top: 20px;" class="task7" id="task7">
+
+            <h3>Reflect</h3>
+            <p> 
+              Share before/after results + water saved estimate.  
+**Action:** Post a reflection on the experience.
+             
+           </p>
+            <button style="background-color: rgb(37, 212, 37);color: white;border-radius: 6px;border: none;" value="20" onclick="addPoints(this.value,this)">Submit</button>
+          </div>
+
+        </div>
+      </div>
+
+      <div style="display: none;" class="content2" id="content2">
+
+        <h1>Install a Rain Barrel System</h1>
+        <p>Rain barrels collect roof runoff for garden use, reducing demand on potable water.
+          Outdoor water use accounts for up to 50% of total household water consumption, especially during warmer months. A single rain barrel can collect up to 1,300 gallons of water per year, which helps reduce:
+Your dependence on potable (drinking) water for irrigation
+
+
+Stormwater runoff that can carry pollutants into local waterways
+
+
+Your water bill and environmental footprint
+
+
+By completing this challenge, you’re actively reducing water waste, lowering demand on municipal systems, and building resilience during drought periods.
+
+        </p>
+        <h3>What You'll do:</h3>
+        <li>
+          <ol>Measure your downspout area for barrel placement</ol>
+          <ol>Buy a 50+ gallon rain barrel with mosquito-proof screen and spigot.</ol>
+          <ol>Place barrel on a raised stand for gravity flow.</ol>
+          <ol>Cut the downspout and attach diverter kit.</ol>
+          <ol>Use water for outdoor non-edible plants or cleaning tools.</ol>
+        </li>
+
+        <h3>Perfect for:</h3>
+        <p> Homeowners with gardens or people living in area with seasonal rain! </p>
+
+        <div style="margin-top: 20px;max-height: fit-content;" class="tasks" id="tasks">
+
+          <div style="background-color: white;border-radius: 10px;padding: 20px;" class="task1" id="task1">
+
+            <h3>Choose your Rain Barrel System</h3>
+            <p>Buy a 50+ gallon rain barrel with a spigot, overflow outlet, and mosquito-proof screen.</p>
+            <button style="background-color: rgb(37, 212, 37);color: white;border-radius: 6px;border: none;" value="15" onclick="addPoints(this.value,this)">Submit</button>
+          </div>
+
+          <div style="background-color: white;border-radius: 10px;padding: 20px;margin-top: 20px;" class="task2" id="task2">
+
+            <h3>Pick an ideal installation spot</h3>
+            <p>Select a downspout near your gardern or where you can get water easily and the area should also be flat</p>
+            <button style="background-color: rgb(37, 212, 37);color: white;border-radius: 6px;border: none;" value="10" onclick="addPoints(this.value,this)">Submit</button>
+          </div>
+
+          <div style="background-color: white;border-radius: 10px;padding: 20px;margin-top: 20px;" class="task3" id="task2">
+
+            <h3>Create a stand for your barrel</h3>
+            <p>Elevate the barrel by 12-18 inches using a stand made up of bricks etc.</p>
+            <button style="background-color: rgb(37, 212, 37);color: white;border-radius: 6px;border: none;" value="20" onclick="addPoints(this.value,this)">Submit</button>
+          </div>
+
+          <div style="background-color: white;border-radius: 10px;padding: 20px;margin-top: 20px;" class="task4" id="task2">
+
+            <h3>Cut and Install the downspout diverter</h3>
+            <p>Use a hacksaw to cut your downspout about 1–2 feet above the top of the barrel.
+
+
+              Attach the diverter kit that reroutes rainwater into the barrel and reconnects to the overflow drain.
+              </p>
+            <button style="background-color: rgb(37, 212, 37);color: white;border-radius: 6px;border: none;" value="15" onclick="addPoints(this.value,this)">Submit</button>
+          </div>
+
+          <div style="background-color: white;border-radius: 10px;padding: 20px;margin-top: 20px;" class="task5" id="task2">
+
+            <h3>Secure the barrel and spigot</h3>
+            <p>Make sure the spigot is tightly sealed and test for leaks.
+
+
+              Position the barrel to allow easy access to the spigot or hose connection.
+              
+              
+              Ensure overflow is directed away from your house’s foundation.
+              </p>
+            <button style="background-color: rgb(37, 212, 37);color: white;border-radius: 6px;border: none;" value="20" onclick="addPoints(this.value,this)">Submit</button>
+          </div>
+
+          <div style="background-color: white;border-radius: 10px;padding: 20px;margin-top: 20px;" class="task6" id="task2">
+
+            <h3>Use collected rainwater for use</h3>
+            <p>Connect a watering can or hose to the barrel.
+
+
+              Water non-edible plants, trees, flower beds, or wash garden tools.
+              
+              
+              Don’t use it for drinking or edible crops unless filtered and sanitized.
+              </p>
             <button style="background-color: rgb(37, 212, 37);color: white;border-radius: 6px;border: none;" value="20" onclick="addPoints(this.value,this)">Submit</button>
           </div>
 
@@ -431,6 +632,8 @@ body {
       </div>
     </div>
 
+    </div>
+
     <div id="completionCard" class="popup-card">
       <h2>🎉 Challenge Complete!</h2>
       <p>Great job! You've completed all the tasks.</p>
@@ -438,6 +641,41 @@ body {
     </div>
     
   </div>
+
+  <script>
+    const mockData = {
+      toilet: {
+        old: { waterUse: 6, rating: "⚠️ Inefficient" },
+        upgrade: { model: "Toto Eco", waterUse: 1.28, savings: 70 }
+      },
+      showerhead: {
+        old: { waterUse: 5, rating: "⚠️ High Flow" },
+        upgrade: { model: "Niagara Earth", waterUse: 1.5, savings: 60 }
+      },
+      washing_machine: {
+        old: { waterUse: 40, rating: "❌ Outdated Top Load" },
+        upgrade: { model: "LG HE", waterUse: 15, savings: 100 }
+      }
+    };
+
+    function assessAppliance() {
+      const appliance = document.getElementById("appliance").value;
+      const age = parseInt(document.getElementById("age").value);
+      const resultDiv = document.getElementById("results");
+
+      const data = mockData[appliance];
+      const current = data.old;
+      const upgrade = data.upgrade;
+
+      let comment = age > 6 ? current.rating : "✅ Modern Enough";
+
+      document.getElementById("current").innerText = `Your ${appliance.replace('_', ' ')} is using ~${current.waterUse} gallons/use. Status: ${comment}`;
+      document.getElementById("recommendation").innerText = `Recommended upgrade: ${upgrade.model} (${upgrade.waterUse} gallons/use)`;
+      document.getElementById("savings").innerText = `Estimated yearly savings: ~$${upgrade.savings}`;
+
+      resultDiv.style.display = "block";
+    }
+  </script>
 
   <script>
     let isLogin = true;
@@ -454,7 +692,7 @@ body {
       button.disabled = true;
       button.textContent = 'Completed';
 
-      updateProgress(100);
+      updateProgress(value);
 
       localStorage.setItem("totalScore",totalScore);
       document.querySelector('.score').textContent = `Score: ${totalScore}`;
@@ -471,11 +709,14 @@ body {
         }
       }
 
+    let totalPercent = 0;
+
     function updateProgress(percent) {
       const progressBar = document.getElementById('progress-bar');
-      progressBar.style.height = percent + '%';
+      totalPercent += parseInt(percent, 10);
+      progressBar.style.height = totalPercent + '%';
 
-      if (percent >= 100) {
+      if (totalPercent >= 100) {
         setTimeout(() => {
           document.getElementById('completionCard').style.display = 'block';
         }, 300);
@@ -548,6 +789,9 @@ body {
       document.getElementById('main-content').style.display = 'none';
       document.body.style.background = 'white';
 
+      document.getElementById('content').style.display = 'flex';
+      document.getElementById('content2').style.display = 'none';
+
       document.getElementById('challenge-content').style.display = 'flex';
       document.getElementById('challenge-content').style.flexDirection = 'row';
       document.getElementById('challenge-content').style.gap = '80px';
@@ -555,7 +799,27 @@ body {
       document.getElementById('challenge-content').style.justifyContent = 'center';
       document.getElementById('challenge-content').style.marginTop = '50px';
 
+      document.getElementById('footer').style.display = 'none';
 
+
+    }
+
+    function challenge2(){
+
+      document.getElementById('main-content').style.display = 'none';
+      document.body.style.background = 'white';
+
+      document.getElementById('challenge-content').style.display = 'flex';
+      document.getElementById('challenge-content').style.flexDirection = 'row';
+      document.getElementById('challenge-content').style.gap = '80px';
+
+      document.getElementById('challenge-content').style.justifyContent = 'center';
+      document.getElementById('challenge-content').style.marginTop = '50px';
+
+      document.getElementById('content').style.display = 'none';
+      document.getElementById('content2').style.display = 'flex';
+
+      document.getElementById('footer').style.display = 'none';
     }
 
     //Function to back to home screen 
@@ -574,6 +838,8 @@ body {
       document.getElementById('challenge-content').style.marginTop = '50px';
 
       document.getElementById('completionCard').style.display = 'none';
+
+      document.getElementById('footer').style.display = 'flex';
     }
 
     // Function to display leaderboard from localStorage
