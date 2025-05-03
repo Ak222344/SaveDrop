@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Memory Game</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: beige;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      min-height: 100vh;
+    }
+    .controls {
+      margin-bottom: 20px;
+    }
+    .controls input {
+      padding: 8px;
+      margin: 0 5px;
+      width: 80px;
+      border-radius: 6px;
+      border: 1px solid #aaa;
+      font-size: 1em;
+    }
+    .controls button {
+      padding: 10px 20px;
+      background-color: #333;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1em;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .controls button:hover {
+      background-color: #555;
+    }
+    .game-board {
+      display: grid;
+      justify-content: center;
+      align-content: center;
+      gap: 15px;
+      width: 100%;
+      max-width: 1000px;
+    }
+    .card {
+      width: 120px;
+      height: 120px;
+      background-color: #333;
+      perspective: 1000px;
+    }
+    .card-inner {
+      width: 100%;
+      height: 100%;
+      transition: transform 0.6s;
+      transform-style: preserve-3d;
+      position: relative;
+    }
+    .card.flipped .card-inner {
+      transform: rotateY(180deg);
+    }
+    .card-front, .card-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      border-radius: 12px;
+    }
+    .card-front {
+      background-color: #fff;
+      transform: rotateY(180deg);
+      background-size: cover;
+      background-position: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5em;
+    }
+    .card-back {
+      background-color: #888;
+    }
+    .card.wrong .card-inner {
+      animation: shake 0.5s;
+    }
+    .card.correct .card-front {
+      border: 3px solid limegreen;
+    }
+    @keyframes shake {
+      0% { transform: rotateY(180deg) translateX(0); }
+      25% { transform: rotateY(180deg) translateX(-5px); }
+      50% { transform: rotateY(180deg) translateX(5px); }
+      75% { transform: rotateY(180deg) translateX(-5px); }
+      100% { transform: rotateY(180deg) translateX(0); }
+    }
+    .popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
+      color: black;
+      padding: 25px 50px;
+      border-radius: 16px;
+      font-size: 2em;
+      display: none;
+      z-index: 1000;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }
+  </style>
+</head>
+<body>
+  <div class="controls">
+    Cards: <input type="number" id="cardCount" min="1" value="8">
+    <button onclick="setupBoard()">Start Game</button>
+  </div>
+  <div class="game-board"></div>
+  <div class="popup">Game Over</div>
+
+  <script>
+    const board = document.querySelector('.game-board');
+    const popup = document.querySelector('.popup');
+    const emoji = '💧';
+    const triesAllowed = 3;
+    let triesLeft = triesAllowed;
+    let imageCardIndices = [];
+    let timer;
+    let startTime;
+    let correctGuesses = new Set();
+
+    function shuffle(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    function createCard(index, hasImage) {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.dataset.index = index;
+      card.dataset.hasImage = hasImage;
+      card.innerHTML = `
+        <div class="card-inner">
+          <div class="card-front">${hasImage ? emoji : ''}</div>
+          <div class="card-back"></div>
+        </div>
+      `;
+      return card;
+    }
+
+    function setupBoard() {
+      clearTimeout(timer);
+      board.innerHTML = '';
+      popup.style.display = 'none';
+      triesLeft = triesAllowed;
+      correctGuesses.clear();
+
+      const cardCount = parseInt(document.getElementById('cardCount').value);
+      const imageCount = Math.max(1, Math.floor(cardCount / 3));
+      const imagePositions = Array(cardCount).fill(false);
+      imageCardIndices = [];
+
+      while (imageCardIndices.length < imageCount) {
+        const rand = Math.floor(Math.random() * cardCount);
+        if (!imagePositions[rand]) {
+          imagePositions[rand] = true;
+          imageCardIndices.push(rand);
+        }
+      }
+
+      const cards = [];
+      for (let i = 0; i < cardCount; i++) {
+        const card = createCard(i, imagePositions[i]);
+        cards.push(card);
+        board.appendChild(card);
+      }
+
+      // set grid columns based on square root of cardCount
+      const cols = Math.ceil(Math.sqrt(cardCount));
+      board.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+
+      setTimeout(() => {
+        cards.forEach(card => card.classList.add('flipped'));
+      }, 500);
+
+      setTimeout(() => {
+        cards.forEach(card => card.classList.remove('flipped'));
+        enableClick(cards);
+        startTimer();
+      }, 2500);
+    }
+
+    function enableClick(cards) {
+      cards.forEach(card => {
+        card.addEventListener('click', () => {
+          if (card.classList.contains('flipped') || triesLeft <= 0) return;
+
+          const index = parseInt(card.dataset.index);
+          const hasImage = card.dataset.hasImage === 'true';
+
+          card.classList.add('flipped');
+
+          if (hasImage) {
+            correctGuesses.add(index);
+            card.classList.add('correct');
+            if (correctGuesses.size === imageCardIndices.length) {
+              clearTimeout(timer);
+              setTimeout(() => showPopup('You Win!'), 800);
+            }
+          } else {
+            card.classList.add('wrong');
+            triesLeft--;
+            if (triesLeft === 0) {
+              clearTimeout(timer);
+              setTimeout(() => showPopup('Game Over'), 800);
+            }
+          }
+        });
+      });
+    }
+
+    function showPopup(message) {
+      const timeTaken = ((Date.now() - startTime) / 1000).toFixed(2);
+      const wasted = timeTaken * 4385;
+      const totalCards = imageCardIndices.length;
+      const saved = totalCards * 50;
+
+      const back = document.createElement('button');
+      back.textContent = 'Exit';
+      back.style.backgroundColor = 'red';
+
+      back.addEventListener('click', function(){
+
+        window.location.href = 'index.html';
+      });
+
+      popup.innerHTML = `${message} you took ${timeTaken} seconds<br>Total Water Wasted - ${wasted} gallons <br> Total Water Saved - ${saved} gallons`;
+      popup.style.display = 'block';
+
+      popup.appendChild(back);
+
+      let totalScore = parseInt(localStorage.getItem("totalScore")) || 0;
+
+      totalScore += saved;
+      localStorage.setItem("totalScore", totalScore);
+
+      const currentUser = localStorage.getItem("loggedInUser");
+      let scores = JSON.parse(localStorage.getItem("userScores") || '{}');
+      scores[currentUser] = totalScore;
+      localStorage.setItem("userScores", JSON.stringify(scores));
+    }
+
+    function startTimer() {
+      startTime = Date.now();
+      timer = setTimeout(() => {
+        if (correctGuesses.size < imageCardIndices.length) {
+          showPopup("Time's up! You took 7 seconds");
+        }
+      }, 7000);
+    }
+
+    setupBoard();
+  </script>
+</body>
+</html>
